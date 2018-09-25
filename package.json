@@ -1,0 +1,28 @@
+{
+  "name": "stream-helper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/RioloGiuseppe/stream-helper.git"
+  },
+  "author": {
+    "email": "riolo.giuseppe@gmail.com",
+    "name": "Giuseppe Riolo"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RioloGiuseppe/stream-helper/issues"
+  },
+  "homepage": "https://github.com/RioloGiuseppe/stream-helper#readme",
+  "devDependencies": {
+    "@types/node": "10.11.0"
+  },
+  "dependencies": {
+    "byte-serializer": "0.0.17"
+  }
+}
