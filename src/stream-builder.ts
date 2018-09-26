@@ -3,7 +3,7 @@ import { Serializable } from "byte-serializer";
 
 export class StreamBuilder extends Transform {
 
-    public startByte: number;
+    public startByte: number = 0;
     public crcFunction: (data: Buffer) => Buffer;
 
     constructor() {
