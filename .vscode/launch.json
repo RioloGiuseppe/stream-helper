@@ -7,9 +7,17 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "Launch Program",
+            "name": "Build Example",
             "preLaunchTask": "tsc",
-            "program": "${workspaceFolder}/build/index.js",
+            "program": "${workspaceFolder}/build/examples/build-examlple.js",
+            "autoAttachChildProcesses": false
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Parse Example",
+            "preLaunchTask": "tsc",
+            "program": "${workspaceFolder}/build/examples/parse-example.js",
             "autoAttachChildProcesses": false
         }
     ]
