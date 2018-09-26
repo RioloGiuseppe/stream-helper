@@ -10,7 +10,7 @@ export class StreamBuilder extends Transform {
 
     // TODO::STUFFING Function
 
-    constructor(payloadManager: PayloadManager) {
+    constructor(payloadManager?: PayloadManager) {
         super({ objectMode: true });
         this._payloadManager = payloadManager || null;
     }

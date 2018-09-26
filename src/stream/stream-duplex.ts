@@ -5,7 +5,6 @@ import { PayloadManager } from "../payload/payload-manager";
 
 export abstract class StreamManager extends StreamParser {
 
-    private _payloadManager: PayloadManager;
     private _startByte: number;
     private _checksum: (data: Buffer) => Buffer;
     private _builder: StreamBuilder;
@@ -22,9 +21,8 @@ export abstract class StreamManager extends StreamParser {
 
     public get builder(): StreamBuilder { return this._builder; }
 
-    constructor(payloadManager: PayloadManager) {
-        super();
-        this._payloadManager = payloadManager || null
+    constructor(payloadManager?: PayloadManager) {
+        super(payloadManager);
         this._builder = new StreamBuilder(payloadManager || null);
     }
 
