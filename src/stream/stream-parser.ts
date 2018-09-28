@@ -24,30 +24,41 @@ export class StreamParser extends Transform {
 
     public _transform(chunk: Buffer, encoding: string, callback: TransformCallback): void {
         if (chunk instanceof Buffer) {
+            // if no data is received for 100ms, reset the state machine
             if (this._timeout) clearTimeout(this._timeout);
             this._timeout = setTimeout(() => this._reset(), 100);
+
             while (chunk.length > 0) {
-                while (!this._started && chunk.length > 0 && chunk[0] !== this.startByte)
-                    chunk = chunk.slice(1);
+                // If message is not started, remove all bytes before message start
+                while (!this._started && chunk.length > 0 && chunk[0] !== this.startByte) chunk = chunk.slice(1);
+                
+                // Start message reading
                 if (chunk.length > 0 && chunk[0] === this.startByte) {
                     chunk = chunk.slice(1);
                     this._started = true;
                 }
 
+                // Read payload length
                 if (this._started === true && chunk.length > 0 && this._len === null) {
                     this._len = chunk[0];
                     chunk = chunk.slice(1);
                 }
+
+                // If exists a payload manager get action
                 if (this._started === true && chunk.length > 0 && this._payloadManager instanceof PayloadManager && this._action === null) {
                     this._action = chunk[0];
                     chunk = chunk.slice(1);
                 }
+
+                // read payload
                 if (this._started === true && chunk.length > 0 && this._len !== null) {
                     while (chunk.length > 0 && this._payload.length !== this._len) {
                         this._payload = Buffer.concat([this._payload, Buffer.from([chunk[0]])]);
                         chunk = chunk.slice(1);
                     }
                 }
+
+                // read checksum if checksum function is defined
                 if (this._started === true && typeof this.crcFunction === "function" && this._payload.length === this._len) {
                     this._crc = this.crcFunction(this._payload);
                     while (chunk.length > 0 && this._crcRead.length !== this._crc.length) {
@@ -55,6 +66,8 @@ export class StreamParser extends Transform {
                         chunk = chunk.slice(1);
                     }
                 }
+
+                // parse received payload
                 if (this._payload.length === this._len) {
                     if (typeof this.crcFunction === "function") {
                         if (Buffer.compare(this._crcRead, this._crc) === 0)

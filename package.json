@@ -4,7 +4,11 @@
   "description": "",
   "main": "dist/index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "create-sample": "npm i serialport && tsc -p tsconfig-samples.json",
+    "build": "tsc",
+    "build-samples": "tsc -p tsconfig-samples.json",
+    "build-all": "tsc && tsc -p tsconfig-samples.json",
+    "preinstall": "tsc"
   },
   "repository": {
     "type": "git",

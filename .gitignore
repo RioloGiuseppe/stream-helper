@@ -81,3 +81,5 @@ typings/
 !.vscode/extensions.json
 
 build
+package-lock.json
+**/*.txt
