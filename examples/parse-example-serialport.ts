@@ -2,11 +2,15 @@ import { StreamParser, PayloadManager } from "../src";
 import { DataTest } from "./data-test";
 import { CRC } from 'crc-full';
 
-import { createReadStream } from "fs";
+import * as SerialPort from 'serialport'
 
-let readTest = createReadStream("test-out.txt");
+var readTest = new SerialPort('COM13', {
+    baudRate: 9600
+}, (e) => {
+    console.error(e);
+});
 
-let plManager = new PayloadManager();
+var plManager = new PayloadManager();
 plManager.registerMessage(2, new DataTest());
 
 let parser = new StreamParser(plManager);
@@ -17,3 +21,5 @@ readTest.pipe(parser);
 
 parser.on("warn", (e) => console.warn(e));
 parser.on("data", (c) => console.info(c));
+
+
