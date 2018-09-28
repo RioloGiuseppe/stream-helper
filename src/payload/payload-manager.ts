@@ -24,7 +24,7 @@ export class PayloadManager {
     }
 
     getId(value: ISerializable): number {
-        let k = Object.keys(this._idMessage).find(key => this._idMessage[key].cons === value.constructor);
+        let k = Object.keys(this._idMessage).find(key => this._idMessage[key].constructor === value.constructor);
         if (k !== undefined) return parseInt(k);
         else return null;
     }
