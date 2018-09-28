@@ -3,7 +3,7 @@ import { StreamParser } from "./stream-parser";
 import { PayloadManager } from "../payload/payload-manager";
 
 
-export abstract class StreamManager extends StreamParser {
+export class StreamDuplex extends StreamParser {
 
     private _startByte: number;
     private _checksum: (data: Buffer) => Buffer;
