@@ -16,7 +16,7 @@ plManager.registerMessage(2, new DataTest());
 
 var duplex = new StreamDuplex(plManager);
 duplex.startByte = 0x01;
-duplex.checksum = (d: Buffer) => CRC.default('CRC16_CCIT_ZERO').computeBuffer(d);
+duplex.checksum = (d: Buffer) => CRC.default('CRC16_CCITT_FALSE').computeBuffer(d);
 
 streamIO.pipe(duplex);
 duplex.builder.pipe(streamIO);

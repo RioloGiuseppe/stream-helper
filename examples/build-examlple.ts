@@ -11,7 +11,7 @@ plManager.registerMessage(2, new DataTest());
 
 let builder = new StreamBuilder(plManager);
 builder.startByte = 0x01;
-builder.checksum = (d: Buffer) => CRC.default("CRC16_CCIT_ZERO").computeBuffer(d);
+builder.checksum = (d: Buffer) => CRC.default("CRC16_CCITT_FALSE").computeBuffer(d);
 
 builder.pipe(writerTest);
 

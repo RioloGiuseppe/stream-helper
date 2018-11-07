@@ -11,7 +11,7 @@ plManager.registerMessage(2, new DataTest());
 
 let parser = new StreamParser(plManager);
 parser.startByte = 0x01;
-parser.crcFunction = (d: Buffer) => CRC.default("CRC16_CCIT_ZERO").computeBuffer(d);
+parser.crcFunction = (d: Buffer) => CRC.default("CRC16_CCITT_FALSE").computeBuffer(d);
 
 readTest.pipe(parser);
 

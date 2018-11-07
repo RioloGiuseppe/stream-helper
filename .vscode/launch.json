@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Build Example",
             "preLaunchTask": "tsc",
-            "program": "${workspaceFolder}/build/examples/build-examlple.js",
+            "program": "${workspaceFolder}/build/examples/examples/build-examlple.js",
             "autoAttachChildProcesses": false
         },
         {
@@ -17,7 +17,7 @@
             "request": "launch",
             "name": "Parse Example",
             "preLaunchTask": "tsc",
-            "program": "${workspaceFolder}/build/examples/parse-example.js",
+            "program": "${workspaceFolder}/build/examples/examples/parse-example-serialport.js",
             "autoAttachChildProcesses": false
         }
     ]
