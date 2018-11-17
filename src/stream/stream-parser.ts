@@ -15,7 +15,7 @@ export class StreamParser extends Transform {
     public permissive: boolean = false;
     private _payloadManager: PayloadManager = null;
     private _len: number | null = null;
-    private _action: number | null = null;
+    private _head: Buffer = Buffer.alloc(0);
     private _payload: Buffer = Buffer.alloc(0);
     private _timeout: NodeJS.Timer | null = null;
     private _started: boolean = false;
@@ -31,7 +31,7 @@ export class StreamParser extends Transform {
             while (chunk.length > 0) {
                 // If message is not started, remove all bytes before message start
                 while (!this._started && chunk.length > 0 && chunk[0] !== this.startByte) chunk = chunk.slice(1);
-                
+
                 // Start message reading
                 if (chunk.length > 0 && chunk[0] === this.startByte) {
                     chunk = chunk.slice(1);
@@ -44,10 +44,12 @@ export class StreamParser extends Transform {
                     chunk = chunk.slice(1);
                 }
 
-                // If exists a payload manager get action
-                if (this._started === true && chunk.length > 0 && this._payloadManager instanceof PayloadManager && this._action === null) {
-                    this._action = chunk[0];
-                    chunk = chunk.slice(1);
+                // If exists a payload manager get head
+                if (this._started === true && chunk.length > 0 && this._payloadManager instanceof PayloadManager && this._len !== null && this._head.length !== this._payloadManager.headSize) {
+                    while (chunk.length > 0 && this._head.length !== this._payloadManager.headSize) {
+                        this._head = Buffer.concat([this._head, Buffer.from([chunk[0]])]);
+                        chunk = chunk.slice(1);
+                    }
                 }
 
                 // read payload
@@ -85,8 +87,8 @@ export class StreamParser extends Transform {
     }
 
     private _parse(data: Buffer) {
-        if (this._action !== null) {
-            let o = this._payloadManager.getObject(this._action);
+        if (this._head !== null) {
+            let o = this._payloadManager.getObject(this._head);
             if (o === null && !this.permissive) {
                 this.emit("warn", new Error("Message non registered"));
             } else if (o !== null) {
@@ -105,7 +107,7 @@ export class StreamParser extends Transform {
         this._started = false;
         this._payload = Buffer.alloc(0);
         this._len = null;
-        this._action = null;
+        this._head = null;
     }
 
     public _flush(cb: () => void) {

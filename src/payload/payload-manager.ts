@@ -1,31 +1,34 @@
 import { ISerializable } from "./serializable-interface";
 
 export class PayloadManager {
-    private _idMessage: { [id: number]: ISerializable }
+    private _idMessage: { [id: string]: ISerializable }
+    public headSize: number;
 
     constructor() {
         this._idMessage = {};
     }
 
-    public registerMessage(id: number, message: ISerializable) {
-        if (typeof this._idMessage[id] === 'undefined')
-            this._idMessage[id] = message;
+    public registerMessage(id: Buffer | number[], message: ISerializable) {
+        if (!(id instanceof Buffer))
+            id = Buffer.from(id)
+        if (typeof this._idMessage[id.toString('base64')] === 'undefined')
+            this._idMessage[id.toString('base64')] = message;
         else
-            throw new Error(`Message ${id.toString(16)} already defined!`)
+            throw new Error(`Message ${id.toString('base64')} already defined!`)
     }
 
-    public unregisterMessage(id: number, message: ISerializable) {
-        if (typeof this._idMessage[id] !== 'undefined')
-            delete this._idMessage[id];
+    public unregisterMessage(id: Buffer, message: ISerializable) {
+        if (typeof this._idMessage[id.toString('base64')] !== 'undefined')
+            delete this._idMessage[id.toString('base64')];
     }
 
-    getObject(id: number): ISerializable {
-        return (this._idMessage[id] || null);
+    getObject(id: Buffer): ISerializable {
+        return (this._idMessage[id.toString('base64')] || null);
     }
 
-    getId(value: ISerializable): number {
+    getId(value: ISerializable): Buffer {
         let k = Object.keys(this._idMessage).find(key => this._idMessage[key].constructor === value.constructor);
-        if (k !== undefined) return parseInt(k);
+        if (k !== undefined) return Buffer.from(k, 'base64');
         else return null;
     }
 }
