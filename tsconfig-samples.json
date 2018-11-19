@@ -2,8 +2,7 @@
   "compilerOptions": {
     "target": "es6",
     "module": "commonjs",
-    "allowJs": true,
-    "declaration": false,
+    "declaration": true,
     "sourceMap": true,
     "outDir": "./build/examples",
     "noImplicitAny": false,

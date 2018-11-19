@@ -1,6 +1,6 @@
 {
   "name": "stream-helper",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "description": "",
   "main": "build/index.js",
   "typings": "build/index.d.ts",
@@ -21,7 +21,7 @@
     "build": "tsc",
     "build-samples": "tsc -p tsconfig-samples.json",
     "build-all": "tsc && tsc -p tsconfig-samples.json",
-    "preinstall": "tsc"
+    "prepublish": "tsc"
   },
   "repository": {
     "type": "git",
@@ -38,6 +38,6 @@
   "homepage": "https://github.com/RioloGiuseppe/stream-helper",
   "readme": "https://github.com/RioloGiuseppe/stream-helper#readme",
   "devDependencies": {
-    "@types/node": "10.11.0"
+    "@types/node": "^10.12.9"
   }
 }
