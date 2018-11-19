@@ -12,7 +12,7 @@ var streamIO = new SerialPort('COM13', {
 
 
 var plManager = new PayloadManager();
-plManager.registerMessage(2, new DataTest());
+plManager.registerMessage([2], new DataTest());
 
 var duplex = new StreamDuplex(plManager);
 duplex.startByte = 0x01;

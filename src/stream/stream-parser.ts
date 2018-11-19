@@ -1,10 +1,10 @@
-import { TransformCallback, Writable, Transform } from "stream";
+import { TransformCallback, Transform } from "stream";
 import { PayloadManager } from "../payload/payload-manager";
-import { ISerializable } from "../payload/serializable-interface";
+import { ISerializable, CrcFunction, IMessage } from "../payload/serializable-interface";
 
 export class StreamParser extends Transform {
     public startByte: number = 0;
-    public crcFunction: (data: Buffer) => Buffer;
+    public crcFunction: CrcFunction;
 
     constructor(payloadManager?: PayloadManager) {
         super({
@@ -94,7 +94,7 @@ export class StreamParser extends Transform {
             } else if (o !== null) {
                 let d: ISerializable = new (<any>o.constructor)();
                 d.deserialize(this._payload);
-                this.push(d);
+                this.push({ data: d, head: this._head } as IMessage);
             } else {
                 this.push(data);
             }

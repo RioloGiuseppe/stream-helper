@@ -7,7 +7,7 @@ import { createWriteStream } from "fs";
 let writerTest = createWriteStream("test-out.txt");
 
 var plManager = new PayloadManager();
-plManager.registerMessage(2, new DataTest());
+plManager.registerMessage([2], new DataTest());
 
 let builder = new StreamBuilder(plManager);
 builder.startByte = 0x01;

@@ -11,7 +11,7 @@ var readTest = new SerialPort('COM13', {
 });
 
 var plManager = new PayloadManager();
-plManager.registerMessage(2, new DataTest());
+plManager.registerMessage([2], new DataTest());
 
 let parser = new StreamParser(plManager);
 parser.startByte = 0x01;
