@@ -1,11 +1,8 @@
 # stream-helper
 
 ![Support Node of LTS](https://img.shields.io/badge/node-LTS-brightgreen.svg?style=plastic) ![npm version](https://img.shields.io/badge/npm-3.5.0-brightgreen.svg?style=plastic) 
-
-
 ![Build passing](https://img.shields.io/badge/build-passing%20Typescript-brightgreen.svg?style=plastic) 
 ![Support](https://img.shields.io/badge/support-JavaScript%20|%20TypeScript-brightgreen.svg?style=plastic) 
-
 ![dependencies none](https://img.shields.io/badge/dependencies-None-blue.svg?style=plastic) ![License mit](https://img.shields.io/badge/license-MIT-blue.svg?style=plastic)
 
 ---

@@ -2,9 +2,22 @@
   "name": "stream-helper",
   "version": "1.0.0",
   "description": "",
-  "main": "dist/index.js",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
+  "keywords": [
+    "node-stream",
+    "stream",
+    "serial",
+    "serial-buffer",
+    "stream-to-object",
+    "buffer-to-object"
+  ],
+  "licenses": [{
+    "type": "MIT",
+    "url": "https://github.com/RioloGiuseppe/stream-helper/blob/master/LICENSE"
+  }],
   "scripts": {
-    "create-sample": "npm i serialport && tsc -p tsconfig-samples.json",
+    "create-sample": "npm i serialport crc-full byte-serializer && tsc -p tsconfig-samples.json",
     "build": "tsc",
     "build-samples": "tsc -p tsconfig-samples.json",
     "build-all": "tsc && tsc -p tsconfig-samples.json",
@@ -22,7 +35,8 @@
   "bugs": {
     "url": "https://github.com/RioloGiuseppe/stream-helper/issues"
   },
-  "homepage": "https://github.com/RioloGiuseppe/stream-helper#readme",
+  "homepage": "https://github.com/RioloGiuseppe/stream-helper",
+  "readme": "https://github.com/RioloGiuseppe/stream-helper#readme",
   "devDependencies": {
     "@types/node": "10.11.0"
   }
