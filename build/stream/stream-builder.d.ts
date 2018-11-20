@@ -7,8 +7,8 @@ export declare class StreamBuilder extends Transform {
     startByte: number;
     checksum: CrcFunction;
     constructor(payloadManager?: PayloadManager);
+    _transform(chunk: ISerializable | IMessage | Buffer, encoding: string, callback: TransformCallback): void;
     private _isChunkBuffer;
     private _isChunkSerializable;
     private _isChunckMessage;
-    _transform(chunk: ISerializable | IMessage | Buffer, encoding: string, callback: TransformCallback): void;
 }

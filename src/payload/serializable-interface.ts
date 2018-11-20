@@ -7,5 +7,5 @@ export type CrcFunction = (data: Buffer) => Buffer;
 
 export interface IMessage {
     head?: Buffer | number[];
-    data: ISerializable;
+    data: ISerializable | Buffer;
 }

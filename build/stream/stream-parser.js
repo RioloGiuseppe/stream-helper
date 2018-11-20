@@ -54,45 +54,58 @@ class StreamParser extends stream_1.Transform {
                 }
                 // read checksum if checksum function is defined
                 if (this._started === true && typeof this.crcFunction === "function" && this._payload.length === this._len) {
-                    this._crc = this.crcFunction(this._payload);
+                    this._crc = this.crcFunction(Buffer.concat([this._head, this._payload]));
                     while (chunk.length > 0 && this._crcRead.length !== this._crc.length) {
                         this._crcRead = Buffer.concat([this._crcRead, Buffer.from([chunk[0]])]);
                         chunk = chunk.slice(1);
                     }
                 }
                 // parse received payload
-                if (this._payload.length === this._len) {
+                if ((this._payload.length === this._len && typeof this.crcFunction !== "function") ||
+                    (this._payload.length === this._len && typeof this.crcFunction === "function" && this._crcRead.length === this._crc.length)) {
                     if (typeof this.crcFunction === "function") {
                         if (Buffer.compare(this._crcRead, this._crc) === 0)
-                            this._parse(this._payload);
+                            this._parse();
                         else
                             this.emit("warn", new Error("CRC Error"));
                     }
                     else
-                        this._parse(this._payload);
+                        this._parse();
                     this._reset();
                 }
             }
         }
         callback();
     }
-    _parse(data) {
-        if (this._head !== null) {
-            let o = this._payloadManager.getObject(this._head);
-            if (o === null && !this.permissive) {
+    _parse() {
+        if (this._head !== null && "getObject" in this._payloadManager) {
+            let deserializer = this._payloadManager.getObject(this._head);
+            if (deserializer === null && !this.permissive) {
                 this.emit("warn", new Error("Message non registered"));
             }
-            else if (o !== null) {
-                let d = new o.constructor();
-                d.deserialize(this._payload);
-                this.push({ data: d, head: this._head });
+            else if (deserializer !== null) {
+                let deserializerInstance;
+                if (typeof deserializer.prototype !== "undefined" && typeof deserializer.prototype.constructor !== "undefined") {
+                    deserializerInstance = new deserializer();
+                    if (typeof deserializerInstance.deserialize === "function") {
+                        deserializerInstance.deserialize(this._payload);
+                        this.push({ data: deserializerInstance, head: this._head });
+                    }
+                }
+                else if (typeof deserializer.deserialize === "function") {
+                    deserializerInstance.deserialize(this._payload);
+                    this.push({ data: deserializerInstance, head: this._head });
+                }
+                else {
+                    console.error("error deserialize payload");
+                }
             }
             else {
-                this.push(data);
+                this.push({ head: this._head, data: this._payload });
             }
         }
         else {
-            this.push(data);
+            this.push({ head: this._head, data: this._payload });
         }
     }
     _reset() {

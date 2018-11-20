@@ -20,7 +20,9 @@ class PayloadManager {
         return (this._idMessage[id.toString('base64')] || null);
     }
     getId(value) {
-        let k = Object.keys(this._idMessage).find(key => this._idMessage[key].constructor === value.constructor);
+        let k = Object.keys(this._idMessage).find(key => (this._idMessage[key] === value && value.constructor.name.toLowerCase() === "function") ||
+            (this._idMessage[key].constructor === value.constructor && value.constructor.name.toLowerCase() !== "function") ||
+            (typeof this._idMessage[key] === "function" && this._idMessage[key].name === value.constructor.name && value.constructor.name !== "Function"));
         if (k !== undefined)
             return Buffer.from(k, 'base64');
         else

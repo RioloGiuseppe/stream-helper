@@ -30,7 +30,8 @@ export class StreamParser extends Transform {
 
             while (chunk.length > 0) {
                 // If message is not started, remove all bytes before message start
-                while (!this._started && chunk.length > 0 && chunk[0] !== this.startByte) chunk = chunk.slice(1);
+                while (!this._started && chunk.length > 0 && chunk[0] !== this.startByte)
+                    chunk = chunk.slice(1);
 
                 // Start message reading
                 if (chunk.length > 0 && chunk[0] === this.startByte) {
@@ -62,7 +63,7 @@ export class StreamParser extends Transform {
 
                 // read checksum if checksum function is defined
                 if (this._started === true && typeof this.crcFunction === "function" && this._payload.length === this._len) {
-                    this._crc = this.crcFunction(this._payload);
+                    this._crc = this.crcFunction(Buffer.concat([this._head, this._payload]));
                     while (chunk.length > 0 && this._crcRead.length !== this._crc.length) {
                         this._crcRead = Buffer.concat([this._crcRead, Buffer.from([chunk[0]])]);
                         chunk = chunk.slice(1);
@@ -70,15 +71,16 @@ export class StreamParser extends Transform {
                 }
 
                 // parse received payload
-                if (this._payload.length === this._len) {
+                if ((this._payload.length === this._len && typeof this.crcFunction !== "function") ||
+                    (this._payload.length === this._len && typeof this.crcFunction === "function" && this._crcRead.length === this._crc.length)) {
                     if (typeof this.crcFunction === "function") {
                         if (Buffer.compare(this._crcRead, this._crc) === 0)
-                            this._parse(this._payload);
+                            this._parse();
                         else
                             this.emit("warn", new Error("CRC Error"));
                     }
                     else
-                        this._parse(this._payload);
+                        this._parse();
                     this._reset();
                 }
             }
@@ -86,21 +88,30 @@ export class StreamParser extends Transform {
         callback();
     }
 
-    private _parse(data: Buffer) {
-        if (this._head !== null) {
-            let o = this._payloadManager.getObject(this._head);
-            if (o === null && !this.permissive) {
+    private _parse() {
+        if (this._head !== null && "getObject" in this._payloadManager) {
+            let deserializer = this._payloadManager.getObject(this._head);
+            if (deserializer === null && !this.permissive) {
                 this.emit("warn", new Error("Message non registered"));
-            } else if (o !== null) {
-                let d: ISerializable = new (<any>o.constructor)();
-                d.deserialize(this._payload);
-                this.push({ data: d, head: this._head } as IMessage);
+            } else if (deserializer !== null) {
+                let deserializerInstance: ISerializable;
+                if (typeof (<Function>deserializer).prototype !== "undefined" && typeof (<Function>deserializer).prototype.constructor !== "undefined") {
+                    deserializerInstance = new (<any>deserializer)();
+                    if (typeof deserializerInstance.deserialize === "function") {
+                        deserializerInstance.deserialize(this._payload);
+                        this.push({ data: deserializerInstance, head: this._head } as IMessage);
+                    }
+                } else if (typeof (<ISerializable>deserializer).deserialize === "function") {
+                    deserializerInstance.deserialize(this._payload);
+                    this.push({ data: deserializerInstance, head: this._head } as IMessage);
+                } else {
+                    console.error("error deserialize payload");
+                }
             } else {
-                this.push(data);
+                this.push({ head: this._head, data: this._payload } as IMessage);
             }
-
         } else {
-            this.push(data);
+            this.push({ head: this._head, data: this._payload } as IMessage);
         }
     }
     private _reset() {

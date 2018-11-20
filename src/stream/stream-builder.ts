@@ -14,18 +14,6 @@ export class StreamBuilder extends Transform {
         this._payloadManager = payloadManager || null;
     }
 
-    private _isChunkBuffer(chunk: ISerializable | IMessage | Buffer): chunk is Buffer {
-        return chunk instanceof Buffer
-    }
-
-    private _isChunkSerializable(chunk: ISerializable | IMessage | Buffer): chunk is ISerializable {
-        return "serialize" in chunk;
-    }
-
-    private _isChunckMessage(chunk: ISerializable | IMessage | Buffer): chunk is IMessage {
-        return "data" in chunk && "serialize" in chunk.data;
-    }
-
     public _transform(chunk: ISerializable | IMessage | Buffer, encoding: string, callback: TransformCallback): void {
         if (this._isChunkBuffer(chunk)) {
             let ch = typeof this.checksum !== 'function' ? [] : this.checksum(chunk);
@@ -33,11 +21,17 @@ export class StreamBuilder extends Transform {
             this.push(b);
         }
         if (this._isChunckMessage(chunk)) {
-            let p = chunk.data.serialize();
-            let action = chunk.head ? chunk.head : [];
-            let ch = typeof this.checksum !== 'function' ? [] : this.checksum(p);
-            let b = Buffer.from([this.startByte, p.length, ...action, ...p, ...ch]);
-            this.push(b);
+            if ((chunk.data === null || chunk.data === undefined) && (chunk.head === null || chunk.head === undefined))
+                console.error("Invalid data");
+            else {
+                let p = chunk.data ? (<ISerializable>chunk.data).serialize() : Buffer.alloc(0);
+                let h = chunk.head ? chunk.head : Buffer.alloc(0);
+                if (!(h instanceof Buffer))
+                    h = Buffer.from(h);
+                let ch = typeof this.checksum !== 'function' ? [] : this.checksum(Buffer.concat([h, p]));
+                let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
+                this.push(b);
+            }
         }
         if (this._isChunkSerializable(chunk)) {
             let p = chunk.serialize();
@@ -51,5 +45,17 @@ export class StreamBuilder extends Transform {
             }
         }
         callback();
+    }
+
+    private _isChunkBuffer(chunk: ISerializable | IMessage | Buffer): chunk is Buffer {
+        return chunk instanceof Buffer
+    }
+
+    private _isChunkSerializable(chunk: ISerializable | IMessage | Buffer): chunk is ISerializable {
+        return "serialize" in chunk;
+    }
+
+    private _isChunckMessage(chunk: ISerializable | IMessage | Buffer): chunk is IMessage {
+        return "head" in chunk || ("data" in chunk && "serialize" in chunk.data);
     }
 }
