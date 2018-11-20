@@ -31,13 +31,13 @@ class StreamBuilder extends stream_1.Transform {
         }
         if (this._isChunkSerializable(chunk)) {
             let p = chunk.serialize();
-            let action = this._payloadManager instanceof payload_manager_1.PayloadManager ? [this._payloadManager.getId(chunk)] : [];
-            if (action[0] === null) {
+            let h = this._payloadManager instanceof payload_manager_1.PayloadManager ? this._payloadManager.getId(chunk) : Buffer.alloc(0);
+            if (h[0] === null) {
                 this.emit("error", new Error(`Message ${chunk.constructor.name} not registered`));
             }
             else {
-                let ch = typeof this.checksum !== 'function' ? [] : this.checksum(p);
-                let b = Buffer.from([this.startByte, p.length, ...action, ...p, ...ch]);
+                let ch = typeof this.checksum !== 'function' ? Buffer.alloc(0) : this.checksum(Buffer.concat([h, p]));
+                let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
                 this.push(b);
             }
         }

@@ -25,8 +25,8 @@ export class StreamParser extends Transform {
     public _transform(chunk: Buffer, encoding: string, callback: TransformCallback): void {
         if (chunk instanceof Buffer) {
             // if no data is received for 100ms, reset the state machine
-            if (this._timeout) clearTimeout(this._timeout);
-            this._timeout = setTimeout(() => this._reset(), 100);
+            //if (this._timeout) clearTimeout(this._timeout);
+            //this._timeout = setTimeout(() => this._reset(), 100);
 
             while (chunk.length > 0) {
                 // If message is not started, remove all bytes before message start
@@ -102,8 +102,8 @@ export class StreamParser extends Transform {
                         this.push({ data: deserializerInstance, head: this._head } as IMessage);
                     }
                 } else if (typeof (<ISerializable>deserializer).deserialize === "function") {
-                    deserializerInstance.deserialize(this._payload);
-                    this.push({ data: deserializerInstance, head: this._head } as IMessage);
+                    (<ISerializable> deserializer).deserialize(this._payload);
+                    this.push({ data: deserializer, head: this._head } as IMessage);
                 } else {
                     console.error("error deserialize payload");
                 }
@@ -118,7 +118,7 @@ export class StreamParser extends Transform {
         this._started = false;
         this._payload = Buffer.alloc(0);
         this._len = null;
-        this._head = null;
+        this._head = Buffer.alloc(0);
     }
 
     public _flush(cb: () => void) {

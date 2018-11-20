@@ -1,10 +1,16 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 class PayloadManager {
-    constructor() {
+    constructor(headSize) {
         this._idMessage = {};
+        this._headSize = headSize;
+    }
+    get headSize() {
+        return this._headSize;
     }
     registerMessage(id, message) {
+        if (id.length !== this._headSize)
+            throw new Error("Invalid head size");
         if (!(id instanceof Buffer))
             id = Buffer.from(id);
         if (typeof this._idMessage[id.toString('base64')] === 'undefined')

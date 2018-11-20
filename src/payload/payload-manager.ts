@@ -2,13 +2,20 @@ import { ISerializable } from "./serializable-interface";
 
 export class PayloadManager {
     private _idMessage: { [id: string]: (new () => ISerializable) | ISerializable }
-    public headSize: number;
+    private _headSize: number;
 
-    constructor() {
+    constructor(headSize: number) {
         this._idMessage = {};
+        this._headSize = headSize;
+    }
+
+    public get headSize() {
+        return this._headSize;
     }
 
     public registerMessage(id: Buffer | number[], message: (new () => ISerializable) | ISerializable) {
+        if (id.length !== this._headSize)
+            throw new Error("Invalid head size");
         if (!(id instanceof Buffer))
             id = Buffer.from(id)
         if (typeof this._idMessage[id.toString('base64')] === 'undefined')
