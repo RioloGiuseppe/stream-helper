@@ -6,7 +6,7 @@ import { createReadStream } from "fs";
 
 let readTest = createReadStream("test-out.txt");
 
-let plManager = new PayloadManager();
+let plManager = new PayloadManager(1);
 plManager.registerMessage([2], new DataTest());
 
 let parser = new StreamParser(plManager);

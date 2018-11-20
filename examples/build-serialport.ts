@@ -10,7 +10,7 @@ var serialport = new SerialPort('COM5', {
     console.error(e);
 });
 
-var plManager = new PayloadManager();
+var plManager = new PayloadManager(1);
 plManager.registerMessage([2], new DataTest());
 
 let builder = new StreamBuilder(plManager);

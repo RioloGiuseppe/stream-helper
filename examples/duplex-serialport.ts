@@ -4,22 +4,22 @@ import { CRC } from 'crc-full';
 
 import * as SerialPort from 'serialport'
 
-var streamIO = new SerialPort('COM13', {
+var serialport = new SerialPort('COM5', {
     baudRate: 9600
 }, (e) => {
     console.error(e);
 });
 
 
-var plManager = new PayloadManager();
+var plManager = new PayloadManager(1);
 plManager.registerMessage([2], new DataTest());
 
 var duplex = new StreamDuplex(plManager);
 duplex.startByte = 0x7E;
 duplex.checksum = (d: Buffer) => CRC.default('CRC16_CCITT_FALSE').computeBuffer(d);
 
-streamIO.pipe(duplex);
-duplex.builder.pipe(streamIO);
+serialport.pipe(duplex);
+duplex.builder.pipe(serialport);
 
 duplex.on("warn", (e) => console.warn(e));
 duplex.on("data", (c) => console.info(c));
