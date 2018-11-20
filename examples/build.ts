@@ -10,7 +10,7 @@ var plManager = new PayloadManager();
 plManager.registerMessage([2], new DataTest());
 
 let builder = new StreamBuilder(plManager);
-builder.startByte = 0x01;
+builder.startByte = 0x7E;
 builder.checksum = (d: Buffer) => CRC.default("CRC16_CCITT_FALSE").computeBuffer(d);
 
 builder.pipe(writerTest);

@@ -6,7 +6,19 @@
         {
             "type": "typescript",
             "tsconfig": "tsconfig.json",
-            "label": "tsc",
+            "label": "build",
+            "problemMatcher": [
+                "$tsc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "type": "typescript",
+            "tsconfig": "tsconfig-samples.json",
+            "label": "buildSamples",
             "problemMatcher": [
                 "$tsc"
             ],

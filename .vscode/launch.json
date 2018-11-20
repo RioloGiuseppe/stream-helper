@@ -8,16 +8,40 @@
             "type": "node",
             "request": "launch",
             "name": "Build Example",
-            "preLaunchTask": "tsc",
-            "program": "${workspaceFolder}/build/examples/examples/build-examlple.js",
+            "preLaunchTask": "buildSamples",
+            "program": "${workspaceFolder}/build/demo/examples/build.js",
             "autoAttachChildProcesses": false
         },
         {
             "type": "node",
             "request": "launch",
             "name": "Parse Example",
-            "preLaunchTask": "tsc",
-            "program": "${workspaceFolder}/build/examples/examples/parse-example-serialport.js",
+            "preLaunchTask": "buildSamples",
+            "program": "${workspaceFolder}/build/demo/examples/parse.js",
+            "autoAttachChildProcesses": false
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Build Example SP",
+            "preLaunchTask": "buildSamples",
+            "program": "${workspaceFolder}/build/demo/examples/build-serialport.js",
+            "autoAttachChildProcesses": false
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Parse Example SP",
+            "preLaunchTask": "buildSamples",
+            "program": "${workspaceFolder}/build/demo/examples/parse-serialport.js",
+            "autoAttachChildProcesses": false
+        },
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Duplex Example SP",
+            "preLaunchTask": "buildSamples",
+            "program": "${workspaceFolder}/build/demo/examples/duplex-serialport.js",
             "autoAttachChildProcesses": false
         }
     ]

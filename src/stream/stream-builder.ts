@@ -35,7 +35,7 @@ export class StreamBuilder extends Transform {
         }
         if (this._isChunkSerializable(chunk)) {
             let p = chunk.serialize();
-            let action = this._payloadManager instanceof PayloadManager ? [this._payloadManager.getId(chunk)] : [];
+            let action = this._payloadManager instanceof PayloadManager ? this._payloadManager.getId(chunk) : [];
             if (action[0] === null) {
                 this.emit("error", new Error(`Message ${chunk.constructor.name} not registered`));
             } else {

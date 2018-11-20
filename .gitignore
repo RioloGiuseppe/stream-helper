@@ -82,4 +82,4 @@ typings/
 
 package-lock.json
 **/*.txt
-build/examples
+build/demo
