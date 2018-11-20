@@ -19,7 +19,7 @@
     }
   ],
   "scripts": {
-    "create-sample": "npm i serialport crc-full byte-serializer && tsc -p tsconfig-samples.json",
+    "create-samples": "npm i --no-save serialport crc-full byte-serializer && tsc -p tsconfig-samples.json",
     "build": "tsc",
     "build-samples": "tsc -p tsconfig-samples.json",
     "build-all": "tsc && tsc -p tsconfig-samples.json",
