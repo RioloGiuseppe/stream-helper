@@ -17,13 +17,108 @@ $ npm install stream-helper
 
 # Usage
 
-# API
+## Define payload
+
+
+```typescript
+export class DataTest extends Serializable {
+
+    @SerializableInfo.position(0)
+    @SerializableInfo.numberType(NumberType.UInt32)
+    public number: number;
+
+    @SerializableInfo.position(4)
+    @SerializableInfo.textEncoding(TextEncoding.ASCII)
+    @SerializableInfo.length(10)
+    public text: string;
+}
+```
+
+## Create streams
+
+Builder, write-only stream:   
+
+```typescript
+let builder = new StreamBuilder();
+builder.startByte = 0x7E;
+
+// Optional
+builder.checksum = (d: Buffer) => CRC.default("CRC16_CCITT_FALSE").computeBuffer(d);
+```
+Parser, read-only stream:   
+
+```typescript
+let parser = new StreamParser(plManager);
+parser.startByte = 0x7E;
+
+// Optional
+parser.crcFunction = (d: Buffer) => CRC.default("CRC16_CCITT_FALSE").computeBuffer(d);
+```
+
+Duplex, read-write stream:   
+
+```typescript
+var duplex = new StreamDuplex(plManager);
+duplex.startByte = 0x7E;
+
+// Optional
+duplex.checksum = (d: Buffer) => CRC.default('CRC16_CCITT_FALSE').computeBuffer(d);
+```
+## Configure I/O
+
+
+```typescript
+builder.pipe(serialport);
+
+serialport.pipe(parser);
+
+serialport.pipe(duplex);
+duplex.builder.pipe(serialport);
+```
+
+## Send payload
+
+
+```typescript
+let data = new DataTest();
+data.number = 55;
+data.text = "Hello!"
+builder.write(data);
+```
+
+## Configure payload manager using head
+
+
+```typescript
+var plManager = new PayloadManager(1);
+plManager.registerMessage([2], new DataTest());
+```
+
+## Send payload with head
+
+
+```typescript
+let data = new DataTest();
+data.number = 55;
+data.text = "Hello!"
+builder.write(data);
+// Or
+duplex.send(data);
+```
+
+## Receive and parse data
+
+
+```typescript
+parser.on("data", (c) => console.info(c));
+```
 
 # License 
 
 stream-helper packages are all [MIT licensed](https://github.com/riologiuseppe/stream-helper/blob/master/LICENSE) and all it's dependencies are MIT licensed.
 
 # Related
+
 - [`serial-port`](https://github.com/node-serialport/node-serialport) - Serial port library
 - [`crc-full`](https://github.com/riologiuseppe/crc-full) - Crc library
 - [`byte-serializer`](https://github.com/riologiuseppe/byte-serializer) - Crc library
