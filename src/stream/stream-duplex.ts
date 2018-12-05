@@ -9,15 +9,19 @@ export class StreamDuplex extends StreamParser {
     private _startByte: number;
     private _checksum: CrcFunction;
     private _builder: StreamBuilder;
+
     public get startByte(): number { return this._startByte; }
     public set startByte(value: number) {
         this._startByte = value;
-        this._builder.startByte = value;
+        if (this._builder)
+            this._builder.startByte = value;
     }
+
     public get checksum(): CrcFunction { return this._checksum; }
     public set checksum(value: CrcFunction) {
         this._checksum = value;
-        this._builder.checksum = value;
+        if (this._builder)
+            this._builder.checksum = value;
     }
 
     public get builder(): StreamBuilder { return this._builder; }
