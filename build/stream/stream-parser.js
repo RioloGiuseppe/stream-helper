@@ -8,7 +8,6 @@ class StreamParser extends stream_1.Transform {
             objectMode: true
         });
         this.startByte = 0;
-        this.trace = false;
         this.permissive = false;
         this._payloadManager = null;
         this._len = null;

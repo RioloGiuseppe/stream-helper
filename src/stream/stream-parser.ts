@@ -6,7 +6,7 @@ export class StreamParser extends Transform {
     public startByte: number = 0;
     public crcFunction: CrcFunction;
     public logFunction: LogFunction;
-    public trace: boolean = false;
+    public trace: boolean;
 
     constructor(payloadManager?: PayloadManager) {
         super({
