@@ -9,8 +9,7 @@ export class StreamDuplex extends StreamParser {
     private _startByte: number;
     private _builder: StreamBuilder;
     private _checksum: CrcFunction;
-     public trace: boolean = false;
-    
+
     public get startByte(): number { return this._startByte; }
     public set startByte(value: number) {
         this._startByte = value;
@@ -23,6 +22,13 @@ export class StreamDuplex extends StreamParser {
         this._checksum = value;
         if (this._builder)
             this._builder.checksum = value;
+    }
+
+    public get trace(): boolean { return super.trace; }
+    public set trace(value: boolean) {
+        super.trace = value;
+        if (this._builder)
+            this._builder.trace = value;
     }
 
     public get logFunction(): LogFunction { return super.logFunction; }

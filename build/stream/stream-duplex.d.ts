@@ -6,9 +6,9 @@ export declare class StreamDuplex extends StreamParser {
     private _startByte;
     private _builder;
     private _checksum;
-    trace: boolean;
     startByte: number;
     checksum: CrcFunction;
+    trace: boolean;
     logFunction: LogFunction;
     readonly builder: StreamBuilder;
     constructor(payloadManager?: PayloadManager);
