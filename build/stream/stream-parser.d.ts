@@ -1,10 +1,12 @@
 /// <reference types="node" />
 import { TransformCallback, Transform } from "stream";
 import { PayloadManager } from "../payload/payload-manager";
-import { CrcFunction } from "../payload/serializable-interface";
+import { CrcFunction, LogFunction } from "../payload/serializable-interface";
 export declare class StreamParser extends Transform {
     startByte: number;
     crcFunction: CrcFunction;
+    logFunction: LogFunction;
+    trace: boolean;
     constructor(payloadManager?: PayloadManager);
     permissive: boolean;
     private _payloadManager;

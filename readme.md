@@ -113,6 +113,20 @@ duplex.send(data);
 parser.on("data", (c) => console.info(c));
 ```
 
+## Log data
+
+```typescript
+parser.trace = true;
+parser.logFunction = (direction, start, len, head, payload, checksum) => 
+    console.log(`${Buffer.from(direction).toString('hex')} 
+                 ${Buffer.from(start).toString('hex')} 
+                 ${Buffer.from(len).toString('hex')} 
+                 ${Buffer.from(head).toString('hex').replace(/(\S{2})/g,"$1 ")} 
+                 ${Buffer.from(payload).toString('hex').replace(/(\S{2})/g,"$1 ")} 
+                 ${Buffer.from(checksum).toString('hex').replace(/(\S{2})/g,"$1 ")}`);
+```
+
+
 # License 
 
 stream-helper packages are all [MIT licensed](https://github.com/riologiuseppe/stream-helper/blob/master/LICENSE) and all it's dependencies are MIT licensed.

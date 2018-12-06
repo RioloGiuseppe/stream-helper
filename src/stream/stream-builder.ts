@@ -1,11 +1,14 @@
 import { TransformCallback, Writable, Transform } from "stream";
 import { PayloadManager } from "../payload/payload-manager";
-import { ISerializable, CrcFunction, IMessage } from "../payload/serializable-interface";
+import { ISerializable, CrcFunction, IMessage, LogFunction } from "../payload/serializable-interface";
 
 export class StreamBuilder extends Transform {
     private _payloadManager: PayloadManager = null;
     public startByte: number = 0;
     public checksum: CrcFunction;
+    public logFunction: LogFunction
+    public trace: boolean = false;
+
 
     // TODO::STUFFING Function
 
@@ -18,6 +21,8 @@ export class StreamBuilder extends Transform {
         if (this._isChunkBuffer(chunk)) {
             let ch = typeof this.checksum !== 'function' ? [] : this.checksum(chunk);
             let b = Buffer.from([this.startByte, chunk.length, ...chunk, ...ch]);
+            if (this.trace === true && typeof this.logFunction === "function")
+                this.logFunction("write", [this.startByte], [chunk.length], null, chunk, ch);
             this.push(b);
         }
         if (this._isChunckMessage(chunk)) {
@@ -30,6 +35,8 @@ export class StreamBuilder extends Transform {
                     h = Buffer.from(h);
                 let ch = typeof this.checksum !== 'function' ? [] : this.checksum(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
+                if (this.trace === true && typeof this.logFunction === "function")
+                    this.logFunction("write", [this.startByte], [p.length], h, p, ch);
                 this.push(b);
             }
         }
@@ -41,6 +48,8 @@ export class StreamBuilder extends Transform {
             } else {
                 let ch = typeof this.checksum !== 'function' ? Buffer.alloc(0) : this.checksum(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
+                if (this.trace === true && typeof this.logFunction === "function")
+                    this.logFunction("write", [this.startByte], [p.length], h, p, ch);
                 this.push(b);
             }
         }

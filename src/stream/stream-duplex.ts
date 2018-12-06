@@ -1,15 +1,16 @@
 import { StreamBuilder } from "./stream-builder";
 import { StreamParser } from "./stream-parser";
 import { PayloadManager } from "../payload/payload-manager";
-import { CrcFunction } from "../payload/serializable-interface";
+import { CrcFunction, LogFunction } from "../payload/serializable-interface";
 
 
 export class StreamDuplex extends StreamParser {
 
     private _startByte: number;
-    private _checksum: CrcFunction;
     private _builder: StreamBuilder;
-
+    private _checksum: CrcFunction;
+     public trace: boolean = false;
+    
     public get startByte(): number { return this._startByte; }
     public set startByte(value: number) {
         this._startByte = value;
@@ -22,6 +23,13 @@ export class StreamDuplex extends StreamParser {
         this._checksum = value;
         if (this._builder)
             this._builder.checksum = value;
+    }
+
+    public get logFunction(): LogFunction { return super.logFunction; }
+    public set logFunction(value: LogFunction) {
+        super.logFunction = value;
+        if (this._builder)
+            this._builder.logFunction = value;
     }
 
     public get builder(): StreamBuilder { return this._builder; }
