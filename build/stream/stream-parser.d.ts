@@ -13,7 +13,6 @@ export declare class StreamParser extends Transform {
     private _len;
     private _head;
     private _payload;
-    private _timeout;
     private _started;
     private _crcRead;
     private _crc;

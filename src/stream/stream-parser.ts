@@ -3,7 +3,7 @@ import { PayloadManager } from "../payload/payload-manager";
 import { ISerializable, CrcFunction, IMessage, LogFunction } from "../payload/serializable-interface";
 
 export class StreamParser extends Transform {
-    public startByte: number = 0;
+    public startByte: number;
     public crcFunction: CrcFunction;
     public logFunction: LogFunction;
     public trace: boolean;
@@ -19,7 +19,6 @@ export class StreamParser extends Transform {
     private _len: number | null = null;
     private _head: Buffer = Buffer.alloc(0);
     private _payload: Buffer = Buffer.alloc(0);
-    private _timeout: NodeJS.Timer | null = null;
     private _started: boolean = false;
     private _crcRead: Buffer = Buffer.alloc(0);
     private _crc: Buffer;
@@ -120,9 +119,10 @@ export class StreamParser extends Transform {
     }
     private _reset() {
         this._started = false;
-        this._payload = Buffer.alloc(0);
         this._len = null;
+        this._payload = Buffer.alloc(0);
         this._head = Buffer.alloc(0);
+        this._crcRead = Buffer.alloc(0);
     }
 
     public _flush(cb: () => void) {

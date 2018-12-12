@@ -7,13 +7,11 @@ class StreamParser extends stream_1.Transform {
         super({
             objectMode: true
         });
-        this.startByte = 0;
         this.permissive = false;
         this._payloadManager = null;
         this._len = null;
         this._head = Buffer.alloc(0);
         this._payload = Buffer.alloc(0);
-        this._timeout = null;
         this._started = false;
         this._crcRead = Buffer.alloc(0);
         this._payloadManager = payloadManager || null;
@@ -111,9 +109,10 @@ class StreamParser extends stream_1.Transform {
     }
     _reset() {
         this._started = false;
-        this._payload = Buffer.alloc(0);
         this._len = null;
+        this._payload = Buffer.alloc(0);
         this._head = Buffer.alloc(0);
+        this._crcRead = Buffer.alloc(0);
     }
     _flush(cb) {
         cb();
