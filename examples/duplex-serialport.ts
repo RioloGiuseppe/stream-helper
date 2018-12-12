@@ -16,7 +16,7 @@ plManager.registerMessage([2], new DataTest());
 
 var duplex = new StreamDuplex(plManager);
 duplex.startByte = 0x7E;
-duplex.checksum = (d: Buffer) => CRC.default('CRC16_CCITT_FALSE').computeBuffer(d);
+duplex.crcFunction = (d: Buffer) => CRC.default('CRC16_CCITT_FALSE').computeBuffer(d);
 
 serialport.pipe(duplex);
 duplex.builder.pipe(serialport);

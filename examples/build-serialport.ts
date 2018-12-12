@@ -15,7 +15,7 @@ plManager.registerMessage([2], new DataTest());
 
 let builder = new StreamBuilder(plManager);
 builder.startByte = 0x7E;
-builder.checksum = (d: Buffer) => CRC.default("CRC16_CCITT_FALSE").computeBuffer(d);
+builder.crcFunction = (d: Buffer) => CRC.default("CRC16_CCITT_FALSE").computeBuffer(d);
 
 builder.pipe(serialport);
 

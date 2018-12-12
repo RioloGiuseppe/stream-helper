@@ -5,7 +5,7 @@ import { ISerializable, CrcFunction, IMessage, LogFunction } from "../payload/se
 export class StreamBuilder extends Transform {
     private _payloadManager: PayloadManager = null;
     public startByte: number = 0;
-    public checksum: CrcFunction;
+    public crcFunction: CrcFunction;
     public logFunction: LogFunction
     public trace: boolean = false;
 
@@ -19,10 +19,10 @@ export class StreamBuilder extends Transform {
 
     public _transform(chunk: ISerializable | IMessage | Buffer, encoding: string, callback: TransformCallback): void {
         if (this._isChunkBuffer(chunk)) {
-            let ch = typeof this.checksum !== 'function' ? [] : this.checksum(chunk);
+            let ch = typeof this.crcFunction !== 'function' ? [] : this.crcFunction(chunk);
             let b = Buffer.from([this.startByte, chunk.length, ...chunk, ...ch]);
             if (this.trace === true && typeof this.logFunction === "function")
-                this.logFunction("write", [this.startByte], [chunk.length], null, chunk, ch);
+                this.logFunction("write", [this.startByte], [chunk.length], [], chunk || [], ch || []);
             this.push(b);
         }
         if (this._isChunckMessage(chunk)) {
@@ -33,10 +33,10 @@ export class StreamBuilder extends Transform {
                 let h = chunk.head ? chunk.head : Buffer.alloc(0);
                 if (!(h instanceof Buffer))
                     h = Buffer.from(h);
-                let ch = typeof this.checksum !== 'function' ? [] : this.checksum(Buffer.concat([h, p]));
+                let ch = typeof this.crcFunction !== 'function' ? [] : this.crcFunction(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
                 if (this.trace === true && typeof this.logFunction === "function")
-                    this.logFunction("write", [this.startByte], [p.length], h, p, ch);
+                    this.logFunction("write", [this.startByte], [p.length], h || [], p || [], ch || []);
                 this.push(b);
             }
         }
@@ -46,10 +46,10 @@ export class StreamBuilder extends Transform {
             if (h[0] === null) {
                 this.emit("error", new Error(`Message ${chunk.constructor.name} not registered`));
             } else {
-                let ch = typeof this.checksum !== 'function' ? Buffer.alloc(0) : this.checksum(Buffer.concat([h, p]));
+                let ch = typeof this.crcFunction !== 'function' ? Buffer.alloc(0) : this.crcFunction(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
                 if (this.trace === true && typeof this.logFunction === "function")
-                    this.logFunction("write", [this.startByte], [p.length], h, p, ch);
+                    this.logFunction("write", [this.startByte], [p.length], h || [], p || [], ch || []);
                 this.push(b);
             }
         }

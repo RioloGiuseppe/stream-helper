@@ -92,7 +92,7 @@ export class StreamParser extends Transform {
 
     private _parse() {
         if (this.trace === true && typeof this.logFunction === "function")
-            this.logFunction("read", [this.startByte], [this._len], this._head, this._payload, this._crc);
+            this.logFunction("read", [this.startByte], [this._len], this._head || [], this._payload || [], this._crc || []);
         if (this._head !== null && "getObject" in this._payloadManager) {
             let deserializer = this._payloadManager.getObject(this._head);
             if (deserializer === null && !this.permissive) {

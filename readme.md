@@ -125,6 +125,18 @@ parser.logFunction = (direction, start, len, head, payload, checksum) =>
                  ${Buffer.from(payload).toString('hex').replace(/(\S{2})/g,"$1 ")} 
                  ${Buffer.from(checksum).toString('hex').replace(/(\S{2})/g,"$1 ")}`);
 ```
+# Samples
+
+To build and run samples:
+```sh
+git clone https://github.com/RioloGiuseppe/stream-helper.git
+cd stream-helper
+
+npm run create-samples
+# npm run build-samples
+
+node build/demo/examples/duplex-serialport.js
+```
 
 
 # License 

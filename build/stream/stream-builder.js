@@ -16,7 +16,7 @@ class StreamBuilder extends stream_1.Transform {
             let ch = typeof this.checksum !== 'function' ? [] : this.checksum(chunk);
             let b = Buffer.from([this.startByte, chunk.length, ...chunk, ...ch]);
             if (this.trace === true && typeof this.logFunction === "function")
-                this.logFunction("write", [this.startByte], [chunk.length], null, chunk, ch);
+                this.logFunction("write", [this.startByte], [chunk.length], [], chunk || [], ch || []);
             this.push(b);
         }
         if (this._isChunckMessage(chunk)) {
@@ -30,7 +30,7 @@ class StreamBuilder extends stream_1.Transform {
                 let ch = typeof this.checksum !== 'function' ? [] : this.checksum(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
                 if (this.trace === true && typeof this.logFunction === "function")
-                    this.logFunction("write", [this.startByte], [p.length], h, p, ch);
+                    this.logFunction("write", [this.startByte], [p.length], h || [], p || [], ch || []);
                 this.push(b);
             }
         }
@@ -44,7 +44,7 @@ class StreamBuilder extends stream_1.Transform {
                 let ch = typeof this.checksum !== 'function' ? Buffer.alloc(0) : this.checksum(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
                 if (this.trace === true && typeof this.logFunction === "function")
-                    this.logFunction("write", [this.startByte], [p.length], h, p, ch);
+                    this.logFunction("write", [this.startByte], [p.length], h || [], p || [], ch || []);
                 this.push(b);
             }
         }
