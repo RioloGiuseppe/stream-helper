@@ -5,7 +5,7 @@ import { ISerializable, CrcFunction, IMessage, LogFunction } from "../payload/se
 export declare class StreamBuilder extends Transform {
     private _payloadManager;
     startByte: number;
-    checksum: CrcFunction;
+    crcFunction: CrcFunction;
     logFunction: LogFunction;
     trace: boolean;
     constructor(payloadManager?: PayloadManager);

@@ -21,7 +21,7 @@ class StreamDuplex extends stream_parser_1.StreamParser {
     set crcFunction(value) {
         super.crcFunction = value;
         if (this._builder)
-            this._builder.checksum = value;
+            this._builder.crcFunction = value;
     }
     get trace() {
         return super.trace;

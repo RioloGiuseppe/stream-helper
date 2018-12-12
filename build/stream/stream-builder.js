@@ -13,7 +13,7 @@ class StreamBuilder extends stream_1.Transform {
     }
     _transform(chunk, encoding, callback) {
         if (this._isChunkBuffer(chunk)) {
-            let ch = typeof this.checksum !== 'function' ? [] : this.checksum(chunk);
+            let ch = typeof this.crcFunction !== 'function' ? [] : this.crcFunction(chunk);
             let b = Buffer.from([this.startByte, chunk.length, ...chunk, ...ch]);
             if (this.trace === true && typeof this.logFunction === "function")
                 this.logFunction("write", [this.startByte], [chunk.length], [], chunk || [], ch || []);
@@ -27,7 +27,7 @@ class StreamBuilder extends stream_1.Transform {
                 let h = chunk.head ? chunk.head : Buffer.alloc(0);
                 if (!(h instanceof Buffer))
                     h = Buffer.from(h);
-                let ch = typeof this.checksum !== 'function' ? [] : this.checksum(Buffer.concat([h, p]));
+                let ch = typeof this.crcFunction !== 'function' ? [] : this.crcFunction(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
                 if (this.trace === true && typeof this.logFunction === "function")
                     this.logFunction("write", [this.startByte], [p.length], h || [], p || [], ch || []);
@@ -41,7 +41,7 @@ class StreamBuilder extends stream_1.Transform {
                 this.emit("error", new Error(`Message ${chunk.constructor.name} not registered`));
             }
             else {
-                let ch = typeof this.checksum !== 'function' ? Buffer.alloc(0) : this.checksum(Buffer.concat([h, p]));
+                let ch = typeof this.crcFunction !== 'function' ? Buffer.alloc(0) : this.crcFunction(Buffer.concat([h, p]));
                 let b = Buffer.from([this.startByte, p.length, ...h, ...p, ...ch]);
                 if (this.trace === true && typeof this.logFunction === "function")
                     this.logFunction("write", [this.startByte], [p.length], h || [], p || [], ch || []);
